@@ -1,0 +1,31 @@
+body {
+    background-color: black;
+}
+h1{
+    color:aqua;
+}
+.textbox {
+    display: flex;
+    flex-direction: column;
+    width: 320px;
+    padding: 12px;
+    border: none;
+    border-bottom: 2px solid #333;
+    outline: none;
+    font-size: 16px;
+}
+nav a {
+    margin-left: 10px;
+}
+
+.btn {
+    background-color: aqua;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.btn:hover {
+    background-color: deepskyblue;
+}

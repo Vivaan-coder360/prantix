@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Aqua Builder Pro</title>
+
+<style>
+html, body {
+    margin: 0;
+    height: 100%;
+}
+
+body {
+    display: flex;
+    font-family: Arial;
+    background: #000;
+    color: white;
+}
+
+/* TOOLBAR */
+#toolbar {
+    width: 220px;
+    background: #0a0a0a;
+    border-right: 2px solid aqua;
+    padding: 10px;
+}
+
+.tool {
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid aqua;
+    cursor: grab;
+    text-align: center;
+    background: #111;
+    color: aqua;
+}
+
+/* CANVAS */
+#canvas {
+    flex: 1;
+    position: relative;
+    background: black;
+    overflow: hidden;
+}
+
+/* ELEMENT */
+.el {
+    position: absolute;
+    padding: 10px;
+    border: 1px solid aqua;
+    background: rgba(0,255,255,0.08);
+    color: white;
+    min-width: 60px;
+    min-height: 30px;
+    cursor: move;
+}
+
+/* BOX */
+.box {
+    background: rgba(0,255,255,0.05);
+}
+
+/* SELECTED */
+.selected {
+    outline: 2px dashed yellow;
+}
+
+/* RESIZE */
+.resize {
+    width: 10px;
+    height: 10px;
+    background: aqua;
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    cursor: se-resize;
+}
+
+/* BUTTON */
+button {
+    background: black;
+    border: 1px solid aqua;
+    color: aqua;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+button:hover {
+    background: aqua;
+    color: black;
+}
+</style>
+</head>
+
+<body>
+
+<div id="toolbar">
+    <div class="tool" draggable="true" data-type="text">Text</div>
+    <div class="tool" draggable="true" data-type="button">Button</div>
+    <div class="tool" draggable="true" data-type="box">Box</div>
+
+    <button onclick="save()">Save</button>
+    <button onclick="load()">Load</button>
+</div>
+
+<div id="canvas"></div>
+
+<script>
+const canvas = document.getElementById("canvas");
+
+let selected = null;
+let elements = [];
+
+/* TOOL DRAG */
+document.querySelectorAll(".tool").forEach(t => {
+    t.addEventListener("dragstart", e => {
+        e.dataTransfer.setData("type", t.dataset.type);
+    });
+});
+
+/* DROP ZONE */
+canvas.addEventListener("dragover", e => e.preventDefault());
+
+canvas.addEventListener("drop", e => {
+    e.preventDefault();
+    const type = e.dataTransfer.getData("type");
+
+    const el = createElement(type);
+
+    el.style.left = e.offsetX + "px";
+    el.style.top = e.offsetY + "px";
+
+    canvas.appendChild(el);
+    elements.push(el);
+
+    select(el);
+});
+
+/* CREATE ELEMENT */
+function createElement(type) {
+    const el = document.createElement("div");
+    el.classList.add("el");
+
+    el.dataset.type = type;
+
+    if (type === "text") {
+        el.contentEditable = true;
+        el.innerText = "Edit me";
+    }
+
+    if (type === "button") {
+        el.innerHTML = `<button>Click</button>`;
+        el.dataset.link = "";
+
+        el.querySelector("button").onclick = () => {
+            if (el.dataset.link) {
+                window.open(el.dataset.link, "_blank");
+            } else {
+                alert("No link set. Double click to add one.");
+            }
+        };
+
+        el.ondblclick = () => {
+            const url = prompt("Enter URL:");
+            if (url) el.dataset.link = url;
+        };
+    }
+
+    if (type === "box") {
+        el.classList.add("box");
+        attachDropZone(el);
+        el.innerText = "Box";
+    }
+
+    makeInteractable(el);
+    return el;
+}
+
+/* MAKE BOX CONTAINER */
+function attachDropZone(zone) {
+    zone.addEventListener("dragover", e => e.preventDefault());
+
+    zone.addEventListener("drop", e => {
+        e.preventDefault();
+
+        const type = e.dataTransfer.getData("type");
+        const el = createElement(type);
+
+        el.style.left = e.offsetX + "px";
+        el.style.top = e.offsetY + "px";
+
+        zone.appendChild(el);
+        elements.push(el);
+    });
+}
+
+/* SELECT */
+function select(el) {
+    if (selected) selected.classList.remove("selected");
+    selected = el;
+    el.classList.add("selected");
+}
+
+/* DRAG + RESIZE */
+function makeInteractable(el) {
+    let dragging = false;
+    let ox, oy;
+
+    el.onmousedown = e => {
+        select(el);
+        dragging = true;
+        ox = e.offsetX;
+        oy = e.offsetY;
+    };
+
+    document.addEventListener("mousemove", e => {
+        if (!dragging) return;
+
+        const parent = el.parentElement;
+        const rect = parent.getBoundingClientRect();
+
+        el.style.left = (e.clientX - rect.left - ox) + "px";
+        el.style.top = (e.clientY - rect.top - oy) + "px";
+    });
+
+    document.addEventListener("mouseup", () => dragging = false);
+
+    /* resize */
+    const r = document.createElement("div");
+    r.className = "resize";
+    el.appendChild(r);
+
+    let sx, sy, sw, sh;
+
+    r.onmousedown = e => {
+        e.stopPropagation();
+
+        sx = e.clientX;
+        sy = e.clientY;
+        sw = el.offsetWidth;
+        sh = el.offsetHeight;
+
+        document.onmousemove = ev => {
+            el.style.width = sw + (ev.clientX - sx) + "px";
+            el.style.height = sh + (ev.clientY - sy) + "px";
+        };
+
+        document.onmouseup = () => {
+            document.onmousemove = null;
+        };
+    };
+}
+
+/* DELETE */
+document.addEventListener("keydown", e => {
+    if (e.key === "Delete" && selected) {
+        selected.remove();
+        selected = null;
+    }
+});
+
+/* SAVE (JSON) */
+function save() {
+    const data = elements.map(el => ({
+        type: el.dataset.type,
+        html: el.innerHTML,
+        left: el.style.left,
+        top: el.style.top,
+        link: el.dataset.link || ""
+    }));
+
+    localStorage.setItem("builder", JSON.stringify(data));
+    alert("Saved!");
+}
+
+/* LOAD */
+function load() {
+    canvas.innerHTML = "";
+    elements = [];
+
+    const data = JSON.parse(localStorage.getItem("builder") || "[]");
+
+    data.forEach(d => {
+        const el = createElement(d.type);
+
+        el.style.left = d.left;
+        el.style.top = d.top;
+        el.dataset.link = d.link;
+
+        if (d.type === "text") {
+            el.innerText = d.html;
+            el.contentEditable = true;
+        }
+
+        canvas.appendChild(el);
+        elements.push(el);
+    });
+}
+</script>
+
+</body>
+</html>

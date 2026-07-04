@@ -1,0 +1,48 @@
+body {
+background-color: black;
+}
+h1 {
+    color: rgb(0, 110, 254);
+    text-align: justify;
+}
+h2 {
+    color: rgb(6, 253, 31);
+    text-align: justify;
+    
+}
+a {
+    
+    display: inline-block;
+    margin: 10px;
+    color: red;
+    text-decoration: none;
+     font-family:"Inter", sans-serif;
+}
+button {
+    background-color: aqua;
+}
+table {
+    margin-top: 50px;
+     font-family:"Inter", sans-serif;
+}
+nav {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+}
+
+nav a {
+    margin-left: 10px;
+}
+
+.btn {
+    background-color: aqua;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.btn:hover {
+    background-color: deepskyblue;
+}
