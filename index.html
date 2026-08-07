@@ -1,37 +1,291 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    
-    <title>prantix</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>prantix — build your first app</title>
+<style>
+  :root {
+    --bg: #05070d;
+    --bg-panel: #0b0f18;
+    --cyan: #4df0ff;
+    --blue: #4d9dff;
+    --green: #4dff9d;
+    --text: #eaf6ff;
+    --muted: #7f92a8;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Segoe UI", system-ui, sans-serif;
+    overflow-x: hidden;
+  }
+
+  /* subtle starfield backdrop */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background-image:
+      radial-gradient(1px 1px at 20% 30%, #ffffff55, transparent),
+      radial-gradient(1px 1px at 70% 60%, #ffffff33, transparent),
+      radial-gradient(1px 1px at 40% 80%, #ffffff44, transparent),
+      radial-gradient(1px 1px at 90% 15%, #ffffff33, transparent),
+      radial-gradient(1px 1px at 55% 40%, #ffffff22, transparent);
+    background-size: 600px 600px;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  nav {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    padding: 24px 5vw;
+  }
+
+  nav a {
+    text-decoration: none;
+    color: #04121a;
+    background: var(--cyan);
+    font-weight: 600;
+    padding: 10px 22px;
+    border-radius: 8px;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    box-shadow: 0 0 0 rgba(77, 240, 255, 0);
+  }
+
+  nav a:hover, nav a:focus-visible {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(77, 240, 255, 0.35);
+    outline: none;
+  }
+
+  nav a:focus-visible {
+    outline: 2px solid var(--green);
+    outline-offset: 2px;
+  }
+
+  header.hero {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    gap: 5vw;
+    padding: 2vw 6vw 4vw;
+    flex-wrap: wrap;
+  }
+
+  .earth {
+    width: min(38vw, 420px);
+    min-width: 240px;
+    border-radius: 50%;
+    box-shadow: 0 0 60px 10px rgba(77, 157, 255, 0.25);
+    animation: spin 90s linear infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .earth { animation: none; }
+  }
+
+  @keyframes spin {
+    from { background-position: 0 0; }
+  }
+
+  .hero-text {
+    flex: 1;
+    min-width: 280px;
+  }
+
+  .eyebrow {
+    color: var(--green);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    margin-bottom: 12px;
+  }
+
+  h1 {
+    font-size: clamp(1.8rem, 4vw, 3rem);
+    line-height: 1.15;
+    margin: 0 0 18px;
+    color: var(--blue);
+  }
+
+  h1 span {
+    color: var(--cyan);
+  }
+
+  .sub {
+    color: var(--muted);
+    font-size: 1.05rem;
+    max-width: 46ch;
+    margin-bottom: 32px;
+  }
+
+  .cta-row {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .cta-row a {
+    text-decoration: none;
+    font-weight: 700;
+    padding: 14px 28px;
+    border-radius: 10px;
+    font-size: 1rem;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  .cta-primary {
+    background: var(--green);
+    color: #04120a;
+  }
+
+  .cta-primary:hover, .cta-primary:focus-visible {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(77, 255, 157, 0.35);
+  }
+
+  .cta-secondary {
+    background: transparent;
+    color: var(--cyan);
+    border: 2px solid var(--cyan);
+  }
+
+  .cta-secondary:hover, .cta-secondary:focus-visible {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(77, 240, 255, 0.25);
+  }
+
+  a:focus-visible {
+    outline: 2px solid var(--green);
+    outline-offset: 2px;
+  }
+
+  section.steps {
+    position: relative;
+    z-index: 1;
+    padding: 2vw 6vw 6vw;
+  }
+
+  section.steps h2 {
+    color: var(--green);
+    font-size: 1.3rem;
+    border-bottom: 1px solid #1c2733;
+    padding-bottom: 14px;
+    margin-bottom: 28px;
+  }
+
+  .step-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+  }
+
+  .step-card {
+    background: var(--bg-panel);
+    border: 1px solid #1c2733;
+    border-radius: 12px;
+    padding: 22px;
+    transition: border-color 0.2s ease;
+  }
+
+  .step-card:hover {
+    border-color: var(--cyan);
+  }
+
+  .step-card .num {
+    color: var(--cyan);
+    font-weight: 800;
+    font-size: 0.85rem;
+    margin-bottom: 10px;
+    display: block;
+  }
+
+  .step-card h3 {
+    margin: 0 0 8px;
+    font-size: 1.05rem;
+    color: var(--text);
+  }
+
+  .step-card p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.92rem;
+    line-height: 1.5;
+  }
+
+  footer {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    padding: 24px;
+    color: var(--muted);
+    font-size: 0.85rem;
+    border-top: 1px solid #1c2733;
+  }
+
+  footer a {
+    color: var(--muted);
+  }
+</style>
 </head>
-<link rel="stylesheet" href="index.css">
-<body >
-  <a href="https://en.wikipedia.org/wiki/Earth" target="_blank" title="Want to know about the earth?">  
-<img src="images.jfif" hieght = 400>
-  </a>
-    <h1>Welcome to prantix, ready to make you first app without messing with scary lines of text </h1>
-    <hr>
+<body>
+
+  <nav>
+    <a href="Home.html">Home</a>
+    <a href="sign-in.html">Sign in</a>
+    <a href="About.html">About</a>
+  </nav>
+
+  <header class="hero">
+    <img class="earth" src="images.jfif" alt="Illustration of Earth from space">
+    <div class="hero-text">
+      <p class="eyebrow">no scary code required</p>
+      <h1>Welcome to <span>prantix</span> — build your first app without the scary lines of text</h1>
+      <p class="sub">A friendly starting point for making real apps, one simple step at a time. No experience needed — just curiosity.</p>
+      <div class="cta-row">
+        <a class="cta-primary" href="Home.html">Get started</a>
+        <a class="cta-secondary" href="About.html">Learn more</a>
+      </div>
+    </div>
+  </header>
+
+  <section class="steps">
     <h2>How would you like to start?</h2>
-    <br>
+    <div class="step-grid">
+      <div class="step-card">
+        <span class="num">01</span>
+        <h3>Home</h3>
+        <p>Jump straight into building — see what prantix can do first.</p>
+      </div>
+      <div class="step-card">
+        <span class="num">02</span>
+        <h3>Sign in</h3>
+        <p>Already started a project? Pick up right where you left off.</p>
+      </div>
+      <div class="step-card">
+        <span class="num">03</span>
+        <h3>About</h3>
+        <p>New here? Find out what prantix is and who it's for.</p>
+      </div>
+    </div>
+  </section>
 
+  <footer>
+    <a href="T&amp;C.html">Terms and conditions apply</a>
+  </footer>
 
-    <nav>
-        <a href="Home.html" target="_blank" title="Just do it">
-        <button class="btn">Home</button> 
-     </a>
-
-     <a href="Sign in.html" target="_blank" title="Do it">
-        <button class="btn">Sign in</button> 
-     </a>
-
-     <a href="About.html" target="_blank" title="Make your dreams come true just do it">
-         <button class="btn">About</button>  
-     </a>
-    </nav>
-    
-
-    <a href="T&C.html" title="Terms and conditions" target="_blank">
-        <button class="btn"><b>Terms and conditions apply</b></button>
-    </a> 
 </body>
 </html>
+
+    
