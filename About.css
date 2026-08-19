@@ -1,13 +1,436 @@
+:root {
+    --bg: #05070d;
+    --bg-panel: #0b0f18;
+
+    --cyan: #4df0ff;
+    --blue: #4d9dff;
+    --green: #4dff9d;
+
+    --text: #eaf6ff;
+    --muted: #7f92a8;
+
+    --border: #1c2733;
+}
+
+
+/* =========================
+   GLOBAL
+========================= */
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
 body {
-    background-color: black;
+    margin: 0;
+
+    min-height: 100vh;
+
+    background: var(--bg);
+
+    color: var(--text);
+
+    font-family: "Segoe UI", system-ui, sans-serif;
+
+    overflow-x: hidden;
 }
-h1 {
-    color:White;
-    text-align: justify;
-    
+
+
+/* =========================
+   STARFIELD BACKGROUND
+========================= */
+
+body::before {
+    content: "";
+
+    position: fixed;
+
+    inset: 0;
+
+    background-image:
+        radial-gradient(
+            1px 1px at 20% 30%,
+            #ffffff55,
+            transparent
+        ),
+        radial-gradient(
+            1px 1px at 70% 60%,
+            #ffffff33,
+            transparent
+        ),
+        radial-gradient(
+            1px 1px at 40% 80%,
+            #ffffff44,
+            transparent
+        ),
+        radial-gradient(
+            1px 1px at 90% 15%,
+            #ffffff33,
+            transparent
+        ),
+        radial-gradient(
+            1px 1px at 55% 40%,
+            #ffffff22,
+            transparent
+        );
+
+    background-size: 600px 600px;
+
+    pointer-events: none;
+
+    z-index: 0;
 }
-p {
-    color:aqua;
-    text-align: justify;
-    
+
+
+/* =========================
+   NAVIGATION
+========================= */
+
+nav {
+    position: relative;
+
+    z-index: 5;
+
+    display: flex;
+
+    justify-content: flex-end;
+
+    align-items: center;
+
+    gap: 12px;
+
+    padding: 24px 5vw;
+}
+
+nav a {
+    text-decoration: none;
+
+    color: #04121a;
+
+    background: var(--cyan);
+
+    font-weight: 600;
+
+    padding: 10px 22px;
+
+    border-radius: 8px;
+
+    transition:
+        transform 0.15s ease,
+        box-shadow 0.15s ease;
+}
+
+nav a:hover,
+nav a:focus-visible {
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 6px 18px rgba(77, 240, 255, 0.35);
+
+    outline: none;
+}
+
+
+/* =========================
+   MAIN
+========================= */
+
+main {
+    position: relative;
+
+    z-index: 1;
+}
+
+
+/* =========================
+   ABOUT HERO
+========================= */
+
+.about-hero {
+    max-width: 1000px;
+
+    margin: 0 auto;
+
+    padding: 70px 6vw 60px;
+
+    text-align: center;
+}
+
+.about-label {
+    color: var(--green);
+
+    font-weight: 700;
+
+    font-size: 0.85rem;
+
+    letter-spacing: 0.1em;
+
+    margin-bottom: 15px;
+}
+
+.about-hero h1 {
+    color: var(--blue);
+
+    font-size: clamp(2.3rem, 5vw, 4rem);
+
+    line-height: 1.1;
+
+    margin: 0 0 20px;
+}
+
+.about-hero h1 span {
+    color: var(--cyan);
+}
+
+.intro {
+    color: var(--muted);
+
+    font-size: 1.15rem;
+
+    line-height: 1.7;
+
+    max-width: 600px;
+
+    margin: 0 auto;
+}
+
+
+/* =========================
+   STORY CARDS
+========================= */
+
+.story {
+    max-width: 1100px;
+
+    margin: 0 auto;
+
+    padding: 20px 6vw 70px;
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            auto-fit,
+            minmax(280px, 1fr)
+        );
+
+    gap: 24px;
+}
+
+.story-card {
+    background: var(--bg-panel);
+
+    border: 1px solid var(--border);
+
+    border-radius: 14px;
+
+    padding: 30px;
+
+    transition:
+        border-color 0.2s ease,
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.story-card:hover {
+    border-color: var(--cyan);
+
+    transform: translateY(-4px);
+
+    box-shadow:
+        0 10px 30px rgba(77, 240, 255, 0.08);
+}
+
+.card-number {
+    display: block;
+
+    color: var(--cyan);
+
+    font-weight: 800;
+
+    font-size: 0.85rem;
+
+    letter-spacing: 0.05em;
+
+    margin-bottom: 12px;
+}
+
+.story-card h2 {
+    color: var(--text);
+
+    font-size: 1.3rem;
+
+    margin: 0 0 18px;
+}
+
+.story-card p {
+    color: var(--muted);
+
+    line-height: 1.7;
+
+    font-size: 0.95rem;
+
+    margin: 0 0 16px;
+}
+
+.story-card p:last-child {
+    margin-bottom: 0;
+}
+
+
+/* =========================
+   MISSION
+========================= */
+
+.mission {
+    max-width: 1000px;
+
+    margin: 0 auto;
+
+    padding: 10px 6vw 80px;
+
+    text-align: center;
+}
+
+.mission h2 {
+    color: var(--green);
+
+    font-size: 1.5rem;
+
+    margin: 0 0 15px;
+}
+
+.mission p {
+    color: var(--muted);
+
+    max-width: 650px;
+
+    margin: 0 auto 28px;
+
+    line-height: 1.7;
+}
+
+
+/* =========================
+   BACK BUTTON
+========================= */
+
+.back-button {
+    display: inline-block;
+
+    text-decoration: none;
+
+    color: #04120a;
+
+    background: var(--green);
+
+    font-weight: 700;
+
+    padding: 14px 28px;
+
+    border-radius: 10px;
+
+    transition:
+        transform 0.15s ease,
+        box-shadow 0.15s ease;
+}
+
+.back-button:hover,
+.back-button:focus-visible {
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 6px 18px rgba(77, 255, 157, 0.35);
+
+    outline: none;
+}
+
+
+/* =========================
+   FOOTER
+========================= */
+
+footer {
+    position: relative;
+
+    z-index: 1;
+
+    text-align: center;
+
+    padding: 28px 20px;
+
+    color: var(--muted);
+
+    font-size: 0.85rem;
+
+    border-top: 1px solid var(--border);
+}
+
+footer p {
+    margin: 0 0 8px;
+}
+
+footer a {
+    color: var(--muted);
+
+    text-decoration: none;
+
+    transition: color 0.15s ease;
+}
+
+footer a:hover,
+footer a:focus-visible {
+    color: var(--cyan);
+
+    outline: none;
+}
+
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 700px) {
+
+    nav {
+        justify-content: center;
+
+        padding: 18px 20px;
+
+        flex-wrap: wrap;
+    }
+
+    nav a {
+        padding: 9px 16px;
+
+        font-size: 0.9rem;
+    }
+
+    .about-hero {
+        padding: 50px 25px 45px;
+    }
+
+    .about-hero h1 {
+        font-size: clamp(2rem, 10vw, 3rem);
+    }
+
+    .story {
+        padding-left: 25px;
+
+        padding-right: 25px;
+    }
+
+    .story-card {
+        padding: 24px;
+    }
+
+    .mission {
+        padding-left: 25px;
+
+        padding-right: 25px;
+    }
 }
